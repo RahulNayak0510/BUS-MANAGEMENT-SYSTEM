@@ -1,0 +1,51 @@
+<div class="login-container">
+
+  <div class="login-card">
+
+    <div class="logo">🚌</div>
+
+    <h1>BusGo</h1>
+    <p class="subtitle">Bus Ticket Booking System</p>
+
+    <h2>Welcome Back</h2>
+
+    <form (ngSubmit)="login()">
+
+      <label>Email</label>
+
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        placeholder="Enter your email"
+        required
+      >
+
+      <label>Password</label>
+
+      <input
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="Enter your password"
+        required
+      >
+
+      <div class="error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+
+    </form>
+
+    <p class="register">
+      Don't have an account?
+      <a routerLink="/register">Register</a>
+    </p>
+
+  </div>
+
+</div>

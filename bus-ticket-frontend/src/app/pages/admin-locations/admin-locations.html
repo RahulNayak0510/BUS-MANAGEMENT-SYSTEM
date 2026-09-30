@@ -1,0 +1,109 @@
+<div class="admin-page">
+
+  <header>
+    <div>
+      <h1>BusGo Admin</h1>
+      <p>Manage Locations</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/admin-dashboard" class="nav-link">Dashboard</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <h2>📍 Manage Locations</h2>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div class="layout">
+
+      <div class="form-section">
+        <h3>Add New Location</h3>
+
+        <div class="form-card">
+          <label>City Name *</label>
+          <input
+            type="text"
+            name="cityName"
+            [(ngModel)]="newLocation.cityName"
+            placeholder="Enter city name"
+          >
+
+          <label>State *</label>
+          <input
+            type="text"
+            name="state"
+            [(ngModel)]="newLocation.state"
+            placeholder="Enter state"
+          >
+
+          <button class="save-btn" (click)="addLocation()" [disabled]="submitting">
+            {{ submitting ? 'Adding...' : '+ Add Location' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="table-section">
+        <h3>Locations List ({{ locations.length }})</h3>
+
+        <div *ngIf="loading" class="loading">Loading locations...</div>
+
+        <div *ngIf="!loading && locations.length === 0" class="empty">
+          No locations added yet.
+        </div>
+
+        <table *ngIf="!loading && locations.length > 0" class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>City</th>
+              <th>State</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let loc of locations">
+              <ng-container *ngIf="editingId !== loc.locationId">
+                <td>{{ loc.locationId }}</td>
+                <td><strong>{{ loc.cityName }}</strong></td>
+                <td>{{ loc.state }}</td>
+                <td class="actions-col">
+                  <button class="edit-btn" (click)="startEdit(loc)">Edit</button>
+                  <button class="delete-btn" (click)="deleteLocation(loc.locationId!)" [disabled]="deletingId === loc.locationId">
+                    {{ deletingId === loc.locationId ? '...' : 'Delete' }}
+                  </button>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="editingId === loc.locationId">
+                <td>{{ loc.locationId }}</td>
+                <td>
+                  <input type="text" [(ngModel)]="editingLocation.cityName">
+                </td>
+                <td>
+                  <input type="text" [(ngModel)]="editingLocation.state">
+                </td>
+                <td class="actions-col">
+                  <button class="save-btn" (click)="saveEdit()" [disabled]="submitting">
+                    {{ submitting ? '...' : 'Save' }}
+                  </button>
+                  <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

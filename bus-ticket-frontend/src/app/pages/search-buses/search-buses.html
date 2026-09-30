@@ -1,0 +1,119 @@
+<div class="page">
+
+  <header>
+    <div>
+      <h1>BusGo</h1>
+      <p>Search and Book Bus Tickets</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/user-dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/my-bookings" class="nav-link">My Bookings</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="search-card">
+      <h2>🔍 Search Buses</h2>
+
+      <div class="search-fields">
+        <div>
+          <label>From (Source)</label>
+          <select name="sourceId" [(ngModel)]="sourceId" required>
+            <option [ngValue]="null" disabled>Select source city</option>
+            <option *ngFor="let loc of locations" [ngValue]="loc.locationId">
+              {{ loc.cityName }}, {{ loc.state }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label>To (Destination)</label>
+          <select name="destinationId" [(ngModel)]="destinationId" required>
+            <option [ngValue]="null" disabled>Select destination city</option>
+            <option *ngFor="let loc of locations" [ngValue]="loc.locationId">
+              {{ loc.cityName }}, {{ loc.state }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label>Travel Date</label>
+          <input
+            type="date"
+            name="travelDate"
+            [(ngModel)]="travelDate"
+            required
+          >
+        </div>
+
+        <div>
+          <button class="search-btn" (click)="searchJourneys()" [disabled]="loading">
+            {{ loading ? 'Searching...' : 'Search Buses' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+    </div>
+
+    <div class="results-section" *ngIf="searched">
+      <h3>Available Buses ({{ searchResults.length }})</h3>
+
+      <div *ngIf="!loading && searchResults.length === 0" class="no-results">
+        <p>😔 No buses found for the selected route and date.</p>
+      </div>
+
+      <div class="bus-list">
+        <div *ngFor="let journey of searchResults" class="bus-card">
+          <div class="bus-info">
+            <div class="bus-name">
+              <strong>{{ journey.busName }}</strong>
+              <span class="bus-type">{{ journey.busType }}</span>
+            </div>
+            <div class="bus-number">#{{ journey.busNumber }}</div>
+            <div class="operator" *ngIf="journey.operatorName">
+              Operated by: {{ journey.operatorName }}
+            </div>
+          </div>
+
+          <div class="route-info">
+            <div class="time-block">
+              <span class="time">{{ journey.departureTime }}</span>
+              <span class="city">{{ journey.sourceCity }}</span>
+            </div>
+            <div class="arrow">→</div>
+            <div class="time-block">
+              <span class="time">{{ journey.arrivalTime }}</span>
+              <span class="city">{{ journey.destinationCity }}</span>
+            </div>
+          </div>
+
+          <div class="fare-info">
+            <div class="fare">₹{{ journey.fare }}</div>
+            <div class="seats-available">
+              <span [ngClass]="{'seats-low': journey.availableSeats <= 5}">
+                {{ journey.availableSeats }} seats available
+              </span>
+            </div>
+            <div class="date">{{ journey.travelDate }}</div>
+          </div>
+
+          <div class="action">
+            <button
+              (click)="selectSeats(journey.journeyId)"
+              [disabled]="journey.availableSeats === 0"
+            >
+              {{ journey.availableSeats === 0 ? 'Sold Out' : 'Select Seats' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>

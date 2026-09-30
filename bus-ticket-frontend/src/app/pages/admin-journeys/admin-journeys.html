@@ -1,0 +1,160 @@
+<div class="admin-page">
+
+  <header>
+    <div>
+      <h1>BusGo Admin</h1>
+      <p>Manage Journeys</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/admin-dashboard" class="nav-link">Dashboard</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <h2>🗺️ Manage Journeys</h2>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div class="layout">
+
+      <div class="form-section">
+        <h3>Create New Journey</h3>
+
+        <div class="form-card">
+          <label>Bus *</label>
+          <select name="busId" [(ngModel)]="newJourney.busId">
+            <option [ngValue]="0" disabled>Select bus</option>
+            <option *ngFor="let bus of buses" [ngValue]="bus.busId">
+              {{ bus.busName }} (#{{ bus.busNumber }})
+            </option>
+          </select>
+
+          <label>Source (From) *</label>
+          <select name="sourceId" [(ngModel)]="newJourney.sourceId">
+            <option [ngValue]="0" disabled>Select source city</option>
+            <option *ngFor="let loc of locations" [ngValue]="loc.locationId">
+              {{ loc.cityName }}, {{ loc.state }}
+            </option>
+          </select>
+
+          <label>Destination (To) *</label>
+          <select name="destinationId" [(ngModel)]="newJourney.destinationId">
+            <option [ngValue]="0" disabled>Select destination city</option>
+            <option *ngFor="let loc of locations" [ngValue]="loc.locationId">
+              {{ loc.cityName }}, {{ loc.state }}
+            </option>
+          </select>
+
+          <label>Travel Date *</label>
+          <input
+            type="date"
+            name="travelDate"
+            [(ngModel)]="newJourney.travelDate"
+          >
+
+          <label>Departure Time *</label>
+          <input
+            type="datetime-local"
+            name="departureTime"
+            [(ngModel)]="newJourney.departureTime"
+          >
+
+          <label>Arrival Time *</label>
+          <input
+            type="datetime-local"
+            name="arrivalTime"
+            [(ngModel)]="newJourney.arrivalTime"
+          >
+
+          <label>Fare (₹) *</label>
+          <input
+            type="number"
+            name="fare"
+            [(ngModel)]="newJourney.fare"
+            min="1"
+            placeholder="Enter fare amount"
+          >
+
+          <button class="save-btn" (click)="createJourney()" [disabled]="submitting">
+            {{ submitting ? 'Creating...' : '+ Create Journey' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="table-section">
+        <h3>All Journeys ({{ journeys.length }})</h3>
+
+        <div *ngIf="loading" class="loading">Loading journeys...</div>
+
+        <div *ngIf="!loading && journeys.length === 0" class="empty">
+          No journeys created yet. Create your first journey from the form.
+        </div>
+
+        <div *ngIf="!loading && journeys.length > 0" class="journeys-list">
+          <div *ngFor="let j of journeys" class="journey-card">
+            <div class="journey-head">
+              <div class="journey-id">
+                Journey #{{ j.journeyId }}
+                <span class="status-badge" [ngClass]="getStatusClass(j.status!)">
+                  {{ j.status }}
+                </span>
+              </div>
+              <div class="journey-date">📅 {{ j.travelDate }}</div>
+            </div>
+
+            <div class="journey-body">
+              <div class="route">
+                <div class="point">
+                  <span class="dot"></span>
+                  <div>
+                    <div class="time">{{ j.departureTime }}</div>
+                    <div class="city">{{ getLocationName(j.sourceId) }}</div>
+                  </div>
+                </div>
+                <div class="connector"></div>
+                <div class="point">
+                  <span class="dot end"></span>
+                  <div>
+                    <div class="time">{{ j.arrivalTime }}</div>
+                    <div class="city">{{ getLocationName(j.destinationId) }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="details">
+                <div class="detail-row">
+                  <span>Bus:</span><strong>{{ getBusName(j.busId) }}</strong>
+                </div>
+                <div class="detail-row">
+                  <span>Fare:</span><strong class="fare">₹{{ j.fare }}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="journey-footer">
+              <button
+                *ngIf="canCancel(j)"
+                class="cancel-btn"
+                (click)="cancelJourney(j.journeyId!)"
+                [disabled]="cancellingId === j.journeyId"
+              >
+                {{ cancellingId === j.journeyId ? 'Cancelling...' : 'Cancel Journey' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

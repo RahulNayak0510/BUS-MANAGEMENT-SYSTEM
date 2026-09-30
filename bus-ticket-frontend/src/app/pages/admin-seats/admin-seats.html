@@ -1,0 +1,132 @@
+<div class="admin-page">
+
+  <header>
+    <div>
+      <h1>BusGo Admin</h1>
+      <p>Manage Bus Seats</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/admin-dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/admin/buses" class="nav-link">Manage Buses</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <div *ngIf="bus" class="bus-info-bar">
+      <div class="bus-info">
+        <span class="icon">🚌</span>
+        <div>
+          <h3>{{ bus.busName }}</h3>
+          <p>#{{ bus.busNumber }} · {{ bus.busType }} · {{ bus.totalSeats }} seats total</p>
+        </div>
+      </div>
+      <a routerLink="/admin/buses" class="back-link">← Back to Buses</a>
+    </div>
+
+    <h2>💺 Seat Management</h2>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="card">
+        <h3>⚙️ Generate Seats (Auto)</h3>
+        <p class="card-desc">Automatically generate numbered seats for this bus.</p>
+
+        <label>Total Seats</label>
+        <input
+          type="number"
+          [(ngModel)]="totalSeatsInput"
+          min="1"
+          max="100"
+        >
+
+        <button
+          class="primary-btn"
+          (click)="generateSeats()"
+          [disabled]="generating"
+        >
+          {{ generating ? 'Generating...' : 'Generate Seats' }}
+        </button>
+      </div>
+
+      <div class="card">
+        <h3>➕ Add Individual Seat</h3>
+        <p class="card-desc">Add a custom seat manually.</p>
+
+        <label>Seat Number</label>
+        <input
+          type="text"
+          [(ngModel)]="newSeat.seatNumber"
+          placeholder="e.g. A1, 12, etc."
+        >
+
+        <label>Seat Type</label>
+        <select [(ngModel)]="newSeat.seatType">
+          <option value="WINDOW">Window</option>
+          <option value="AISLE">Aisle</option>
+          <option value="SEMI_SLEEPER">Semi-Sleeper</option>
+          <option value="SLEEPER">Sleeper</option>
+        </select>
+
+        <button
+          class="primary-btn"
+          (click)="addIndividualSeat()"
+          [disabled]="addingSeat"
+        >
+          {{ addingSeat ? 'Adding...' : '+ Add Seat' }}
+        </button>
+      </div>
+
+    </div>
+
+    <div class="seats-section">
+      <h3>Seats List ({{ seats.length }})</h3>
+
+      <div *ngIf="loading" class="loading">Loading seats...</div>
+
+      <div *ngIf="!loading && seats.length === 0" class="empty">
+        No seats configured yet. Use "Generate Seats" above to create seats.
+      </div>
+
+      <div *ngIf="!loading && seats.length > 0" class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Seat Number</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let seat of seats">
+              <td>{{ seat.seatId }}</td>
+              <td><strong>{{ seat.seatNumber }}</strong></td>
+              <td><span class="type-badge">{{ getSeatTypeLabel(seat.seatType) }}</span></td>
+              <td class="actions-col">
+                <button
+                  class="delete-btn"
+                  (click)="deleteSeat(seat.seatId!)"
+                  [disabled]="deletingId === seat.seatId"
+                >
+                  {{ deletingId === seat.seatId ? '...' : 'Delete' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+</div>

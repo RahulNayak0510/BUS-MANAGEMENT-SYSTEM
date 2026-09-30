@@ -1,0 +1,96 @@
+<div class="admin-page">
+
+  <header>
+    <div>
+      <h1>🚌 BusGo Admin</h1>
+      <p>Bus Ticket Booking Management Dashboard</p>
+    </div>
+
+    <button (click)="logout()">Logout</button>
+  </header>
+
+  <main>
+
+    <h2>Admin Dashboard</h2>
+
+    <div class="stats">
+      <div class="stat-card">
+        <h3>{{ totalBuses }}</h3>
+        <p>Total Buses</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>{{ totalJourneys }}</h3>
+        <p>Total Journeys</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>{{ totalBookings }}</h3>
+        <p>Total Bookings</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>{{ totalOperators }}</h3>
+        <p>Total Operators</p>
+      </div>
+    </div>
+
+    <div class="actions">
+
+      <div class="action-card" (click)="addBus()">
+        <span>🚌</span>
+        <h3>Add Bus</h3>
+        <p>Add a new bus with details and operator.</p>
+      </div>
+
+      <div class="action-card" (click)="manageBuses()">
+        <span>🚍</span>
+        <h3>Manage Buses</h3>
+        <p>Edit, deactivate or manage seats for buses.</p>
+      </div>
+
+      <div class="action-card" (click)="manageSeatsQuick()">
+        <span>💺</span>
+        <h3>Manage Seats</h3>
+        <p>Configure seat layouts for each bus.</p>
+      </div>
+
+      <div class="action-card" (click)="manageJourneys()">
+        <span>🗺️</span>
+        <h3>Manage Journeys</h3>
+        <p>Set routes, dates, timings and fares.</p>
+      </div>
+
+      <div class="action-card" (click)="manageOperators()">
+        <span>🏢</span>
+        <h3>Manage Operators</h3>
+        <p>Add, edit, or remove bus operators.</p>
+      </div>
+
+      <div class="action-card" (click)="manageLocations()">
+        <span>📍</span>
+        <h3>Manage Locations</h3>
+        <p>Configure cities and states for routes.</p>
+      </div>
+
+      <div class="action-card" (click)="viewBookings()">
+        <span>🎫</span>
+        <h3>View Bookings</h3>
+        <p>View and manage all customer bookings.</p>
+      </div>
+
+      <div class="action-card quick-info">
+        <span>📊</span>
+        <h3>Quick Stats</h3>
+        <p>
+          Locations: {{ totalLocations }}<br>
+          Operators: {{ totalOperators }}<br>
+          Buses: {{ totalBuses }}
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

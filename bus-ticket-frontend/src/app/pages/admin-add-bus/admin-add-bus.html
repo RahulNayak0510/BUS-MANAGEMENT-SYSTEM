@@ -1,0 +1,135 @@
+<div class="admin-page">
+
+  <header>
+    <div>
+      <h1>BusGo Admin</h1>
+      <p>Add New Bus</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/admin-dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/admin/buses" class="nav-link">Manage Buses</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <h2>🚌 Add New Bus</h2>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div class="form-container" *ngIf="!createdBus">
+
+      <div class="form-card">
+        <h3>Bus Details</h3>
+
+        <div class="form-grid">
+          <div>
+            <label>Operator *</label>
+            <select name="operatorId" [(ngModel)]="bus.operatorId" [disabled]="loadingOperators">
+              <option *ngIf="loadingOperators" [ngValue]="0">Loading operators...</option>
+              <option *ngFor="let op of operators" [ngValue]="op.operatorId">
+              {{ op.operatorName }}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label>Bus Number *</label>
+            <input
+              type="text"
+              name="busNumber"
+              [(ngModel)]="bus.busNumber"
+              placeholder="e.g. BUS-101"
+            >
+          </div>
+
+          <div>
+            <label>Bus Name *</label>
+            <input
+              type="text"
+              name="busName"
+              [(ngModel)]="bus.busName"
+              placeholder="e.g. Rajdhani Express"
+            >
+          </div>
+
+          <div>
+            <label>Bus Type *</label>
+            <select name="busType" [(ngModel)]="bus.busType">
+              <option value="AC">AC</option>
+              <option value="NON_AC">Non-AC</option>
+              <option value="SLEEPER">Sleeper</option>
+              <option value="SEMI_SLEEPER">Semi-Sleeper</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Total Seats *</label>
+            <input
+              type="number"
+              name="totalSeats"
+              [(ngModel)]="bus.totalSeats"
+              min="1"
+              max="100"
+            >
+          </div>
+
+          <div>
+            <label>Status</label>
+            <select name="status" [(ngModel)]="bus.status">
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="save-btn" (click)="saveBus()" [disabled]="submitting || loadingOperators">
+            {{ submitting ? 'Saving...' : 'Save Bus' }}
+          </button>
+          <button class="back-btn" routerLink="/admin-dashboard">
+            Cancel
+          </button>
+        </div>
+
+        <p class="hint" *ngIf="operators.length === 0 && !loadingOperators">
+          ⚠️ No operators found. <a routerLink="/admin/operators">Add an operator first</a>
+        </p>
+      </div>
+
+    </div>
+
+    <div class="success-card" *ngIf="createdBus">
+      <div class="success-icon">✅</div>
+      <h3>Bus Added Successfully!</h3>
+
+      <div class="bus-summary">
+        <div class="row"><span>Bus Name:</span><strong>{{ createdBus.busName }}</strong></div>
+        <div class="row"><span>Bus Number:</span><strong>{{ createdBus.busNumber }}</strong></div>
+        <div class="row"><span>Bus Type:</span><strong>{{ createdBus.busType }}</strong></div>
+        <div class="row"><span>Total Seats:</span><strong>{{ createdBus.totalSeats }}</strong></div>
+      </div>
+
+      <div class="next-actions">
+        <button class="primary-btn" (click)="generateSeatsAndGo()">
+          ⚙️ Go to Manage Seats
+        </button>
+        <button class="secondary-btn" (click)="resetForm()">
+          ➕ Add Another Bus
+        </button>
+        <a class="link-btn" routerLink="/admin/buses">
+          View All Buses
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+</div>

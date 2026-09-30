@@ -1,0 +1,135 @@
+<div class="admin-page">
+
+  <header>
+    <div>
+      <h1>BusGo Admin</h1>
+      <p>Manage Bus Operators</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/admin-dashboard" class="nav-link">Dashboard</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <h2>🏢 Manage Operators</h2>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div class="layout">
+
+      <div class="form-section">
+        <h3>Add New Operator</h3>
+
+        <div class="form-card">
+          <label>Operator Name *</label>
+          <input
+            type="text"
+            name="opName"
+            [(ngModel)]="newOperator.operatorName"
+            placeholder="Enter operator name"
+          >
+
+          <label>Contact Number</label>
+          <input
+            type="tel"
+            name="opContact"
+            [(ngModel)]="newOperator.contactNumber"
+            placeholder="Enter contact number"
+          >
+
+          <label>Email</label>
+          <input
+            type="email"
+            name="opEmail"
+            [(ngModel)]="newOperator.email"
+            placeholder="Enter email"
+          >
+
+          <label>Address</label>
+          <input
+            type="text"
+            name="opAddress"
+            [(ngModel)]="newOperator.address"
+            placeholder="Enter address"
+          >
+
+          <button class="save-btn" (click)="addOperator()" [disabled]="submitting">
+            {{ submitting ? 'Adding...' : '+ Add Operator' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="table-section">
+        <h3>Operators List ({{ operators.length }})</h3>
+
+        <div *ngIf="loading" class="loading">Loading operators...</div>
+
+        <div *ngIf="!loading && operators.length === 0" class="empty">
+          No operators added yet.
+        </div>
+
+        <table *ngIf="!loading && operators.length > 0" class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let op of operators">
+              <ng-container *ngIf="editingId !== op.operatorId">
+                <td>{{ op.operatorId }}</td>
+                <td><strong>{{ op.operatorName }}</strong></td>
+                <td>{{ op.contactNumber || '-' }}</td>
+                <td>{{ op.email || '-' }}</td>
+                <td>{{ op.address || '-' }}</td>
+                <td class="actions-col">
+                  <button class="edit-btn" (click)="startEdit(op)">Edit</button>
+                  <button class="delete-btn" (click)="deleteOperator(op.operatorId!)" [disabled]="deletingId === op.operatorId">
+                    {{ deletingId === op.operatorId ? '...' : 'Delete' }}
+                  </button>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="editingId === op.operatorId">
+                <td>{{ op.operatorId }}</td>
+                <td>
+                  <input type="text" [(ngModel)]="editingOperator.operatorName">
+                </td>
+                <td>
+                  <input type="text" [(ngModel)]="editingOperator.contactNumber">
+                </td>
+                <td>
+                  <input type="email" [(ngModel)]="editingOperator.email">
+                </td>
+                <td>
+                  <input type="text" [(ngModel)]="editingOperator.address">
+                </td>
+                <td class="actions-col">
+                  <button class="save-btn" (click)="saveEdit()" [disabled]="submitting">
+                    {{ submitting ? '...' : 'Save' }}
+                  </button>
+                  <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

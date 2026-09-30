@@ -1,0 +1,122 @@
+<div class="page">
+
+  <header>
+    <div>
+      <h1>BusGo</h1>
+      <p>My Bookings</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/user-dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/search-buses" class="nav-link">Search Buses</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="page-header">
+      <h2>🎫 My Bookings</h2>
+      <a routerLink="/search-buses" class="new-booking-btn">
+        + Book New Ticket
+      </a>
+    </div>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      Loading your bookings...
+    </div>
+
+    <div *ngIf="!loading && bookings.length === 0" class="no-bookings">
+      <div class="icon">🎫</div>
+      <h3>No bookings yet</h3>
+      <p>You haven't booked any bus tickets yet.</p>
+      <a routerLink="/search-buses" class="search-link">Search for buses</a>
+    </div>
+
+    <div *ngIf="!loading && bookings.length > 0" class="bookings-list">
+
+      <div class="booking-card" *ngFor="let booking of bookings">
+        <div class="booking-header">
+          <div class="booking-id">
+            Booking #{{ booking.bookingId }}
+            <span class="status-badge" [ngClass]="getStatusClass(booking.bookingStatus)">
+              {{ booking.bookingStatus }}
+            </span>
+          </div>
+          <div class="travel-date">
+            📅 {{ booking.travelDate }}
+          </div>
+        </div>
+
+        <div class="booking-body">
+          <div class="route-section">
+            <div class="route-info">
+              <div class="time-point">
+                <span class="time">{{ booking.departureTime }}</span>
+                <span class="city">{{ booking.sourceCity }}</span>
+              </div>
+              <div class="route-line">
+                <div class="dot"></div>
+                <div class="line"></div>
+                <div class="dot"></div>
+              </div>
+              <div class="time-point">
+                <span class="time">{{ booking.arrivalTime }}</span>
+                <span class="city">{{ booking.destinationCity }}</span>
+              </div>
+            </div>
+            <div class="bus-info">
+              <span class="bus-name">{{ booking.busName }}</span>
+              <span class="bus-number">#{{ booking.busNumber }}</span>
+            </div>
+          </div>
+
+          <div class="details-section">
+            <div class="detail-item">
+              <span class="label">Passenger</span>
+              <span class="value">{{ booking.userName }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Seat</span>
+              <span class="value">{{ booking.seatNumber }} ({{ booking.seatType }})</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Fare</span>
+              <span class="value amount">₹{{ booking.totalAmount }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Payment</span>
+              <span class="value" [ngClass]="getPaymentClass(booking.paymentStatus)">
+                {{ booking.paymentStatus }}
+              </span>
+            </div>
+            <div class="detail-item" *ngIf="booking.transactionId">
+              <span class="label">Transaction ID</span>
+              <span class="value mono">{{ booking.transactionId }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="booking-footer" *ngIf="canCancel(booking)">
+          <button
+            class="cancel-btn"
+            (click)="cancelBooking(booking.bookingId)"
+            [disabled]="cancellingId === booking.bookingId"
+          >
+            {{ cancellingId === booking.bookingId ? 'Cancelling...' : 'Cancel Booking' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

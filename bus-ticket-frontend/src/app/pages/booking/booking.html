@@ -1,0 +1,150 @@
+<div class="page">
+
+  <header>
+    <div>
+      <h1>BusGo</h1>
+      <p>Confirm Your Booking</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/seat-selection" class="nav-link" [queryParams]="{ journeyId: journeyId }">Back to Seats</a>
+      <a routerLink="/my-bookings" class="nav-link">My Bookings</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success" *ngIf="successMessage && paymentCompleted">
+      ✅ {{ successMessage }}
+    </div>
+
+    <div *ngIf="!paymentCompleted" class="booking-container">
+
+      <div class="booking-summary">
+        <h2>🎫 Booking Summary</h2>
+
+        <div class="summary-card">
+          <div class="summary-section">
+            <h3>Journey Details</h3>
+            <div class="detail-row" *ngIf="bookingDetails">
+              <span class="label">Bus</span>
+              <span class="value">{{ bookingDetails.busName }} (#{{ bookingDetails.busNumber }})</span>
+            </div>
+            <div class="detail-row" *ngIf="bookingDetails">
+              <span class="label">Route</span>
+              <span class="value">{{ bookingDetails.sourceCity }} → {{ bookingDetails.destinationCity }}</span>
+            </div>
+            <div class="detail-row" *ngIf="bookingDetails">
+              <span class="label">Date</span>
+              <span class="value">{{ bookingDetails.travelDate }}</span>
+            </div>
+            <div class="detail-row" *ngIf="bookingDetails">
+              <span class="label">Departure</span>
+              <span class="value">{{ bookingDetails.departureTime }}</span>
+            </div>
+            <div class="detail-row" *ngIf="bookingDetails">
+              <span class="label">Arrival</span>
+              <span class="value">{{ bookingDetails.arrivalTime }}</span>
+            </div>
+          </div>
+
+          <div class="summary-section">
+            <h3>Seat Information</h3>
+            <div class="detail-row" *ngIf="bookingDetails">
+              <span class="label">Seat Number</span>
+              <span class="value">{{ bookingDetails.seatNumber }}</span>
+            </div>
+            <div class="detail-row" *ngIf="bookingDetails">
+              <span class="label">Seat Type</span>
+              <span class="value">{{ bookingDetails.seatType }}</span>
+            </div>
+          </div>
+
+          <div class="summary-section total-section">
+            <h3>Payment</h3>
+            <div class="detail-row total-row" *ngIf="bookingDetails">
+              <span class="label">Total Amount</span>
+              <span class="value amount">₹{{ bookingDetails.totalAmount }}</span>
+            </div>
+            <div class="payment-method" *ngIf="!bookingCreated">
+              <div class="method-tag">UPI (Mock Payment)</div>
+              <p class="method-note">This is a demo payment. No actual money will be charged.</p>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!bookingCreated" class="actions">
+          <button class="confirm-btn" (click)="confirmAndPay()" [disabled]="loading">
+            {{ loading ? 'Processing...' : 'Confirm & Pay (UPI)' }}
+          </button>
+          <button class="back-btn" routerLink="/seat-selection" [queryParams]="{ journeyId: journeyId }">
+            ← Back to Seat Selection
+          </button>
+        </div>
+
+        <div *ngIf="bookingCreated && processingPayment" class="processing">
+          <div class="spinner"></div>
+          <p>Processing payment...</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div *ngIf="paymentCompleted && paymentResult" class="confirmation-container">
+      <div class="confirmation-card">
+        <div class="success-icon">✅</div>
+        <h2>Booking Confirmed!</h2>
+
+        <div class="booking-id">
+          Booking ID: <strong>#{{ paymentResult.bookingId }}</strong>
+        </div>
+
+        <div class="payment-details" *ngIf="bookingDetails">
+          <div class="detail-row">
+            <span class="label">Transaction ID</span>
+            <span class="value mono">{{ paymentResult.transactionId }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Payment Status</span>
+            <span class="value status-success">{{ paymentResult.paymentStatus }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Booking Status</span>
+            <span class="value status-success">{{ paymentResult.bookingStatus }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Payment Method</span>
+            <span class="value">{{ paymentResult.paymentMethod }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Amount Paid</span>
+            <span class="value amount">₹{{ paymentResult.amount }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Bus</span>
+            <span class="value">{{ bookingDetails.busName }} (#{{ bookingDetails.busNumber }})</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Seat</span>
+            <span class="value">{{ bookingDetails.seatNumber }}</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary-btn" (click)="goToMyBookings()">
+            View My Bookings
+          </button>
+          <button class="secondary-btn" routerLink="/search-buses">
+            Search More Buses
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>

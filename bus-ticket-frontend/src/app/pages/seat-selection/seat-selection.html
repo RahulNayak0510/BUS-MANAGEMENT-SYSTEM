@@ -1,0 +1,114 @@
+<div class="page">
+
+  <header>
+    <div>
+      <h1>BusGo</h1>
+      <p>Select Your Seats</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/search-buses" class="nav-link">Search Buses</a>
+      <a routerLink="/my-bookings" class="nav-link">My Bookings</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="content-layout">
+
+      <div class="bus-layout">
+        <h2>🚌 Select Your Seats</h2>
+
+        <div class="driver">
+          <span>👤 Driver</span>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item">
+            <span class="seat-sample available"></span>
+            <span>Available</span>
+          </div>
+          <div class="legend-item">
+            <span class="seat-sample selected"></span>
+            <span>Selected</span>
+          </div>
+          <div class="legend-item">
+            <span class="seat-sample booked"></span>
+            <span>Booked</span>
+          </div>
+        </div>
+
+        <div *ngIf="loading" class="loading">
+          Loading seats...
+        </div>
+
+        <div *ngIf="!loading && seats.length === 0" class="no-seats">
+          <p>No seat information available for this journey.</p>
+        </div>
+
+        <div class="seat-grid" *ngIf="!loading && seats.length > 0">
+          <div class="seat-row" *ngFor="let row of getSeatRows(); let rowIdx = index">
+            <div class="seat-wrapper" *ngFor="let seat of row; let colIdx = index">
+              <div *ngIf="seat"
+                class="seat"
+                [ngClass]="{
+                  'available': seat.available,
+                  'selected': isSelected(seat),
+                  'booked': !seat.available
+                }"
+                (click)="toggleSeat(seat)"
+              >
+                {{ seat.seatNumber }}
+              </div>
+              <div *ngIf="!seat" class="seat-spacer"></div>
+              <div *ngIf="colIdx === 1" class="aisle-spacer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-panel">
+        <h3>Booking Summary</h3>
+
+        <div class="summary-item">
+          <span class="label">Selected Seats</span>
+          <span class="value">
+            {{ selectedSeats.length > 0 ? selectedSeatNumbers : 'None' }}
+          </span>
+        </div>
+
+        <div class="summary-item">
+          <span class="label">Number of Seats</span>
+          <span class="value">{{ selectedSeats.length }}</span>
+        </div>
+
+        <div class="summary-item total">
+          <span class="label">Total Fare</span>
+          <span class="value">₹{{ totalFare }}</span>
+        </div>
+
+        <button
+          class="proceed-btn"
+          (click)="proceedToBook()"
+          [disabled]="selectedSeats.length === 0"
+        >
+          Proceed to Book
+        </button>
+
+        <button
+          class="back-btn"
+          routerLink="/search-buses"
+        >
+          ← Back to Search
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

@@ -1,0 +1,24 @@
+# Java / Spring Boot
+bus-ticket-booking/target/
+*.class
+
+# Angular
+bus-ticket-frontend/node_modules/
+bus-ticket-frontend/.angular/
+bus-ticket-frontend/dist/
+
+# Environment / secrets
+.env
+.env.*
+application-local.properties
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

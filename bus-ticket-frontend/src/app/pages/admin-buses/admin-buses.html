@@ -1,0 +1,121 @@
+<div class="admin-page">
+
+  <header>
+    <div>
+      <h1>BusGo Admin</h1>
+      <p>Manage Buses</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/admin-dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/admin/buses/add" class="add-link">+ Add Bus</a>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="page-head">
+      <h2>🚍 Manage Buses</h2>
+      <a routerLink="/admin/buses/add" class="add-btn">+ Add New Bus</a>
+    </div>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div *ngIf="loading" class="loading">Loading buses...</div>
+
+    <div *ngIf="!loading && buses.length === 0" class="empty">
+      <div class="icon">🚌</div>
+      <h3>No buses yet</h3>
+      <p>Add your first bus to get started.</p>
+      <a routerLink="/admin/buses/add" class="add-btn">+ Add Bus</a>
+    </div>
+
+    <div *ngIf="!loading && buses.length > 0" class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Bus Number</th>
+            <th>Bus Name</th>
+            <th>Operator</th>
+            <th>Type</th>
+            <th>Seats</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bus of buses">
+            <ng-container *ngIf="editingId !== bus.busId">
+              <td>{{ bus.busId }}</td>
+              <td><strong>{{ bus.busNumber }}</strong></td>
+              <td>{{ bus.busName }}</td>
+              <td>#{{ bus.operatorId }}</td>
+              <td><span class="type-badge">{{ getBusTypeLabel(bus.busType) }}</span></td>
+              <td>{{ bus.totalSeats }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(bus.status)">
+                  {{ bus.status }}
+                </span>
+              </td>
+              <td class="actions-col">
+                <button class="edit-btn" (click)="startEdit(bus)">Edit</button>
+                <button
+                  class="status-btn"
+                  (click)="toggleStatus(bus)"
+                  [disabled]="actionId === bus.busId"
+                >
+                  {{ actionId === bus.busId ? '...' : (bus.status === 'ACTIVE' ? 'Deactivate' : 'Activate') }}
+                </button>
+                <button class="seats-btn" (click)="manageSeats(bus.busId!)">
+                  Manage Seats
+                </button>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="editingId === bus.busId">
+              <td>{{ bus.busId }}</td>
+              <td>
+                <input type="text" [(ngModel)]="editingBus.busNumber">
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="editingBus.busName">
+              </td>
+              <td>{{ bus.operatorId }}</td>
+              <td>
+                <select [(ngModel)]="editingBus.busType">
+                  <option value="AC">AC</option>
+                  <option value="NON_AC">Non-AC</option>
+                  <option value="SLEEPER">Sleeper</option>
+                  <option value="SEMI_SLEEPER">Semi-Sleeper</option>
+                </select>
+              </td>
+              <td>
+                <input type="number" [(ngModel)]="editingBus.totalSeats" min="1">
+              </td>
+              <td>
+                <select [(ngModel)]="editingBus.status">
+                  <option value="ACTIVE">Active</option>
+                  <option value="INACTIVE">Inactive</option>
+                </select>
+              </td>
+              <td class="actions-col">
+                <button class="save-btn" (click)="saveEdit()" [disabled]="submitting">
+                  {{ submitting ? '...' : 'Save' }}
+                </button>
+                <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+</div>

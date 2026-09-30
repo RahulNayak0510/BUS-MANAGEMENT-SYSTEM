@@ -1,0 +1,96 @@
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0d47a1, #1976d2);
+  padding: 20px 0;
+}
+
+.register-card {
+  width: 450px;
+  padding: 40px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+  text-align: center;
+  font-size: 45px;
+}
+
+h1 {
+  text-align: center;
+  color: #1565c0;
+  margin: 5px 0;
+}
+
+.subtitle {
+  text-align: center;
+  color: #777;
+}
+
+h2 {
+  margin-top: 30px;
+}
+
+label {
+  display: block;
+  margin-top: 18px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+input, select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font-size: 15px;
+}
+
+button {
+  width: 100%;
+  margin-top: 25px;
+  padding: 13px;
+  border: none;
+  border-radius: 7px;
+  background: #1565c0;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #90caf9;
+}
+
+.error {
+  margin-top: 15px;
+  padding: 10px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 6px;
+}
+
+.success {
+  margin-top: 15px;
+  padding: 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 6px;
+}
+
+.login {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.login a {
+  color: #1565c0;
+  font-weight: bold;
+  text-decoration: none;
+}

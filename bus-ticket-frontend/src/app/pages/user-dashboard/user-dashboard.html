@@ -1,0 +1,45 @@
+<div class="user-page">
+
+  <header>
+    <div>
+      <h1>🚌 BusGo</h1>
+      <p *ngIf="userName">Welcome, {{ userName }}!</p>
+      <p *ngIf="!userName">Welcome, Traveler!</p>
+    </div>
+
+    <button (click)="logout()">Logout</button>
+  </header>
+
+  <main>
+
+    <h2>User Dashboard</h2>
+
+    <div class="welcome-card">
+      <div class="welcome-content">
+        <h3>Ready to travel?</h3>
+        <p>Search for buses and book your tickets with ease.</p>
+      </div>
+      <div class="welcome-icon">🎫</div>
+    </div>
+
+    <div class="cards">
+
+      <div class="card" (click)="searchBuses()">
+        <span>🔍</span>
+        <h3>Search Buses</h3>
+        <p>Find available buses between cities and book your preferred seats.</p>
+        <div class="card-action">Search Now →</div>
+      </div>
+
+      <div class="card" (click)="myBookings()">
+        <span>📋</span>
+        <h3>My Bookings</h3>
+        <p>View all your booked tickets, check status, and manage bookings.</p>
+        <div class="card-action">View Bookings →</div>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
