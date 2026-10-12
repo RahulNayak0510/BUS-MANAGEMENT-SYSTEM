@@ -9,14 +9,13 @@ import com.busbooking.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
-    private final Random random = new Random();
 
     public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository) {
         this.paymentRepository = paymentRepository;
@@ -24,8 +23,8 @@ public class PaymentService {
     }
 
     @Transactional
-    public PaymentResponse processPayment(PaymentRequest request) {
-        Booking booking = bookingRepository.findById(request.bookingId())
+    public PaymentResponse processPayment(PaymentRequest request, Integer userId) {
+        Booking booking = bookingRepository.findByBookingIdAndUserId(request.bookingId(), userId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         if (booking.getStatus() == Booking.Status.CONFIRMED || booking.getStatus() == Booking.Status.CANCELLED) {
@@ -47,10 +46,8 @@ public class PaymentService {
         payment.setBookingId(booking.getBookingId());
         payment.setPaymentMethod(paymentMethod);
         payment.setAmount(booking.getTotalAmount());
-        payment.setPaymentStatus(Payment.PaymentStatus.PENDING);
-
         payment.setPaymentStatus(Payment.PaymentStatus.SUCCESS);
-        String transactionId = "TXN-" + System.currentTimeMillis() + "-" + String.format("%05d", random.nextInt(100000));
+        String transactionId = "TXN-" + UUID.randomUUID();
         payment.setTransactionId(transactionId);
 
         Payment savedPayment = paymentRepository.save(payment);
@@ -66,8 +63,26 @@ public class PaymentService {
                 savedPayment.getAmount(),
                 savedPayment.getPaymentStatus().name(),
                 savedPayment.getPaymentDate(),
-                Booking.Status.CONFIRMED.name(),
-                null
+                Booking.Status.CONFIRMED.name()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public PaymentResponse getPaymentByBookingId(Integer bookingId, Integer userId) {
+        Booking booking = bookingRepository.findByBookingIdAndUserId(bookingId, userId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        Payment payment = paymentRepository.findByBookingId(booking.getBookingId())
+                .orElseThrow(() -> new RuntimeException("Payment not found for booking id: " + bookingId));
+
+        return new PaymentResponse(
+                payment.getPaymentId(),
+                payment.getBookingId(),
+                payment.getPaymentMethod().name(),
+                payment.getTransactionId(),
+                payment.getAmount(),
+                payment.getPaymentStatus().name(),
+                payment.getPaymentDate(),
+                booking.getStatus().name()
         );
     }
 }

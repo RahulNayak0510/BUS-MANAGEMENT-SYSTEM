@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService, SeatAvailability, JourneySearchResult } from '../../services/api';
+import { clearAuthState } from '../../services/auth';
 
 @Component({
   selector: 'app-seat-selection',
@@ -116,7 +117,7 @@ export class SeatSelection implements OnInit {
   }
 
   logout(): void {
-    localStorage.clear();
+    clearAuthState();
     this.router.navigate(['/login']);
   }
 }

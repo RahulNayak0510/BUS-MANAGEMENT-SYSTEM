@@ -2,16 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface Bus {
-  busId?: number;
-  busNumber: string;
-  busName: string;
-  busType: string;
-  totalSeats: number;
-  operatorName: string;
-  active?: boolean;
-}
-
 export interface Operator {
   operatorId?: number;
   operatorName: string;
@@ -84,16 +74,6 @@ export interface JourneySearchResult {
   availableSeats: number;
 }
 
-export interface Booking {
-  bookingId?: number;
-  userId?: number;
-  journeyId: number;
-  seatId: number;
-  bookingDate?: string;
-  status?: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
-  totalAmount?: number;
-}
-
 export interface BookingDetails {
   bookingId: number;
   userId: number;
@@ -141,25 +121,6 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  addBus(bus: Bus): Observable<Bus> {
-    return this.http.post<Bus>(
-      `${this.baseUrl}/buses`,
-      bus
-    );
-  }
-
-  getBuses(): Observable<Bus[]> {
-    return this.http.get<Bus[]>(
-      `${this.baseUrl}/buses`
-    );
-  }
-
-  deleteBus(id: number): Observable<void> {
-    return this.http.delete<void>(
-      `${this.baseUrl}/buses/${id}`
-    );
-  }
-
   getOperators(): Observable<Operator[]> {
     return this.http.get<Operator[]>(`${this.baseUrl}/operators`);
   }
@@ -198,6 +159,10 @@ export class ApiService {
 
   deactivateBus(id: number): Observable<BusV2> {
     return this.http.put<BusV2>(`${this.baseUrl}/buses/${id}/deactivate`, {});
+  }
+
+  activateBus(id: number): Observable<BusV2> {
+    return this.http.put<BusV2>(`${this.baseUrl}/buses/${id}/activate`, {});
   }
 
   getSeats(busId: number): Observable<Seat[]> {
@@ -258,7 +223,7 @@ export class ApiService {
 
   searchJourneys(sourceId: number, destinationId: number, travelDate: string): Observable<JourneySearchResult[]> {
     return this.http.get<JourneySearchResult[]>(
-      `${this.baseUrl}/journeys/search?sourceId=${sourceId}&destinationId=${destinationId}&travelDate=${travelDate}`
+      `${this.baseUrl}/journeys/search/detailed?sourceId=${sourceId}&destinationId=${destinationId}&travelDate=${travelDate}`
     );
   }
 
@@ -275,11 +240,11 @@ export class ApiService {
   }
 
   getAllBookingsAdmin(): Observable<BookingDetails[]> {
-    return this.http.get<BookingDetails[]>(`${this.baseUrl}/bookings/all`);
+    return this.http.get<BookingDetails[]>(`${this.baseUrl}/admin/bookings`);
   }
 
   cancelBookingAdmin(id: number): Observable<BookingDetails> {
-    return this.http.put<BookingDetails>(`${this.baseUrl}/bookings/${id}/admin-cancel`, {});
+    return this.http.put<BookingDetails>(`${this.baseUrl}/admin/bookings/${id}/cancel`, {});
   }
 
   makePayment(req: PaymentRequest): Observable<PaymentResponse> {

@@ -49,4 +49,16 @@ public class BusController {
     public ResponseEntity<Bus> deleteBus(@PathVariable Integer id) {
         return ResponseEntity.ok(busService.deactivateBus(id));
     }
+
+    @PutMapping("/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Bus> deactivateBus(@PathVariable Integer id) {
+        return ResponseEntity.ok(busService.deactivateBus(id));
+    }
+
+    @PutMapping("/{id}/activate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Bus> activateBus(@PathVariable Integer id) {
+        return ResponseEntity.ok(busService.activateBus(id));
+    }
 }

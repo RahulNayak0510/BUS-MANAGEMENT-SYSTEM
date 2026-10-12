@@ -4,12 +4,23 @@ import com.busbooking.entity.User;
 import com.busbooking.repository.UserRepository;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 
 @Configuration
 public class DataInitializer {
+
+    @Value("${app.admin.email:}")
+    private String adminEmail;
+
+    @Value("${app.admin.password:}")
+    private String adminPassword;
+
+    @Value("${app.admin.phone:}")
+    private String adminPhone;
 
     @Bean
     public CommandLineRunner createAdmin(
@@ -18,25 +29,22 @@ public class DataInitializer {
 
         return args -> {
 
-            if (!userRepository.existsByEmail("admin@busbooking.com")) {
-
-                User admin = new User();
-
-                admin.setName("System Admin");
-                admin.setEmail("admin@busbooking.com");
-                admin.setPhone("9999999999");
-                admin.setPassword(passwordEncoder.encode("Admin@123"));
-                admin.setRole(User.Role.ADMIN);
-                admin.setAddress("Bangalore");
-
-                userRepository.save(admin);
-
-                System.out.println("====================================");
-                System.out.println("ADMIN ACCOUNT CREATED");
-                System.out.println("Email: admin@busbooking.com");
-                System.out.println("Password: Admin@123");
-                System.out.println("====================================");
+            if (!StringUtils.hasText(adminEmail)
+                    || !StringUtils.hasText(adminPassword)
+                    || !StringUtils.hasText(adminPhone)) {
+                return;
             }
+
+            User admin = userRepository.findByEmail(adminEmail).orElseGet(User::new);
+            if (admin.getUserId() == null) {
+                admin.setName("System Admin");
+                admin.setPhone(adminPhone);
+            }
+
+            admin.setEmail(adminEmail);
+            admin.setPassword(passwordEncoder.encode(adminPassword));
+            admin.setRole(User.Role.ADMIN);
+            userRepository.save(admin);
         };
     }
 }

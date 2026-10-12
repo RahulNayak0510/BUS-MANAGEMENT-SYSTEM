@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, BusV2 } from '../../services/api';
+import { clearAuthState } from '../../services/auth';
 
 @Component({
   selector: 'app-admin-buses',
@@ -98,7 +99,11 @@ export class AdminBuses implements OnInit {
     this.actionId = bus.busId;
     this.errorMessage = '';
 
-    this.apiService.deactivateBus(bus.busId).subscribe({
+    const updateStatus = bus.status === 'ACTIVE'
+      ? this.apiService.deactivateBus(bus.busId)
+      : this.apiService.activateBus(bus.busId);
+
+    updateStatus.subscribe({
       next: () => {
         this.actionId = null;
         this.successMessage = `Bus status updated!`;
@@ -131,7 +136,7 @@ export class AdminBuses implements OnInit {
   }
 
   logout(): void {
-    localStorage.clear();
+    clearAuthState();
     this.router.navigate(['/login']);
   }
 }

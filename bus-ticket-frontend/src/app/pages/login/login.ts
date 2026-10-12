@@ -38,41 +38,21 @@ export class Login {
 
     this.loading = true;
 
-    console.log('Sending login request...');
-    console.log('Email:', this.email);
-
     this.authService.login(this.email, this.password).subscribe({
 
       next: (response) => {
-
-        console.log('LOGIN SUCCESS:', response);
-
         this.loading = false;
-
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('role', response.role);
-        localStorage.setItem('user', JSON.stringify(response));
-
-        console.log('Token saved');
-        console.log('Role:', response.role);
+        this.authService.saveSession(response);
 
         if (response.role === 'ADMIN') {
-
-          console.log('Redirecting to admin dashboard');
-
           this.router.navigate(['/admin-dashboard']);
 
         } else {
-
-          console.log('Redirecting to user dashboard');
-
           this.router.navigate(['/user-dashboard']);
         }
       },
 
       error: (error) => {
-
-        console.error('LOGIN ERROR:', error);
 
         this.loading = false;
 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, Operator } from '../../services/api';
+import { clearAuthState } from '../../services/auth';
 
 @Component({
   selector: 'app-admin-operators',
@@ -141,7 +142,7 @@ export class AdminOperators implements OnInit {
   }
 
   logout(): void {
-    localStorage.clear();
+    clearAuthState();
     this.router.navigate(['/login']);
   }
 }

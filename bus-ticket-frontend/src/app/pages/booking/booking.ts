@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService, BookingDetails, PaymentResponse, PaymentRequest, SeatAvailability } from '../../services/api';
+import { clearAuthState } from '../../services/auth';
 
 @Component({
   selector: 'app-booking',
@@ -97,7 +98,7 @@ export class Booking implements OnInit {
   }
 
   logout(): void {
-    localStorage.clear();
+    clearAuthState();
     this.router.navigate(['/login']);
   }
 }

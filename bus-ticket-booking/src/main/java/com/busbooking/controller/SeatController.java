@@ -1,8 +1,10 @@
 package com.busbooking.controller;
 
 import com.busbooking.dto.SeatAvailabilityResponse;
+import com.busbooking.dto.GenerateSeatsRequest;
 import com.busbooking.entity.Seat;
 import com.busbooking.service.SeatService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,9 +48,9 @@ public class SeatController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Seat>> generateSeatsForBus(
             @PathVariable Integer busId,
-            @RequestParam Integer totalSeats) {
+            @Valid @RequestBody GenerateSeatsRequest request) {
 
-        List<Seat> generatedSeats = seatService.generateSeatsForBus(busId, totalSeats);
+        List<Seat> generatedSeats = seatService.generateSeatsForBus(busId, request.totalSeats());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

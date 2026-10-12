@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, Journey, BusV2, Location } from '../../services/api';
+import { clearAuthState } from '../../services/auth';
 
 @Component({
   selector: 'app-admin-journeys',
@@ -174,7 +175,7 @@ export class AdminJourneys implements OnInit {
   }
 
   logout(): void {
-    localStorage.clear();
+    clearAuthState();
     this.router.navigate(['/login']);
   }
 }

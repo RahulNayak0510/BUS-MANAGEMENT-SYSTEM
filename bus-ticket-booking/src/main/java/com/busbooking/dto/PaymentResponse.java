@@ -11,6 +11,5 @@ public record PaymentResponse(
         BigDecimal amount,
         String paymentStatus,
         LocalDateTime paymentDate,
-        String bookingStatus,
-        Object bookingDetails) {
+        String bookingStatus) {
 }

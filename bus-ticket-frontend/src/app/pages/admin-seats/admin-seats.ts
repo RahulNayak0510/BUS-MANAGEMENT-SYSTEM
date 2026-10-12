@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService, Seat, BusV2 } from '../../services/api';
+import { clearAuthState } from '../../services/auth';
 
 @Component({
   selector: 'app-admin-seats',
@@ -87,7 +88,7 @@ export class AdminSeats implements OnInit {
       this.errorMessage = 'Please enter a valid number of seats';
       return;
     }
-    if (this.seats.length > 0 && !confirm('This will replace all existing seats. Continue?')) {
+    if (this.seats.length > 0 && !confirm('Existing seat numbers may conflict. Generation will stop if it finds a duplicate. Continue?')) {
       return;
     }
 
@@ -121,7 +122,7 @@ export class AdminSeats implements OnInit {
     const seat: Seat = {
       busId: this.busId,
       seatNumber: this.newSeat.seatNumber!,
-      seatType: this.newSeat.seatType as any
+      seatType: this.newSeat.seatType ?? 'WINDOW'
     };
 
     this.apiService.createSeat(this.busId, seat).subscribe({
@@ -168,7 +169,7 @@ export class AdminSeats implements OnInit {
   }
 
   logout(): void {
-    localStorage.clear();
+    clearAuthState();
     this.router.navigate(['/login']);
   }
 }

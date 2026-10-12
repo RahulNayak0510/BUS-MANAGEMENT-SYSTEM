@@ -10,6 +10,22 @@ export interface AuthResponse {
   role: string;
 }
 
+export interface RegistrationRequest {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  address: string;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
+  dateOfBirth: string;
+}
+
+export function clearAuthState(): void {
+  localStorage.removeItem('token');
+  localStorage.removeItem('role');
+  localStorage.removeItem('user');
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,7 +45,7 @@ export class AuthService {
     );
   }
 
-  register(data: any): Observable<AuthResponse> {
+  register(data: RegistrationRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
       `${this.apiUrl}/register`,
       data
@@ -37,9 +53,18 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('user');
+    clearAuthState();
+  }
+
+  saveSession(response: AuthResponse): void {
+    localStorage.setItem('token', response.token);
+    localStorage.setItem('role', response.role);
+    localStorage.setItem('user', JSON.stringify({
+      userId: response.userId,
+      name: response.name,
+      email: response.email,
+      role: response.role
+    }));
   }
 
   getToken(): string | null {

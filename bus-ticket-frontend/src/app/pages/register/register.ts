@@ -54,12 +54,8 @@ export class Register {
       dateOfBirth: this.dateOfBirth
     }).subscribe({
       next: (response) => {
-        console.log('REGISTER SUCCESS:', response);
         this.loading = false;
-
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('role', response.role);
-        localStorage.setItem('user', JSON.stringify(response));
+        this.authService.saveSession(response);
 
         this.successMessage = 'Registration successful! Redirecting...';
         setTimeout(() => {
@@ -67,7 +63,6 @@ export class Register {
         }, 1000);
       },
       error: (error) => {
-        console.error('REGISTER ERROR:', error);
         this.loading = false;
 
         if (error.status === 0) {
